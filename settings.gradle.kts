@@ -2,7 +2,7 @@ rootProject.name = "board"
 
 include("common")
 include("service")
-include("service:artic le")
+include("service:article")
 include("service:comment")
 include("service:article-read")
 include("service:hot-article")
