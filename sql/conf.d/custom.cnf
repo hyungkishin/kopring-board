@@ -1,0 +1,13 @@
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+
+[mysqld]
+# 외부 접속을 허용하기 위해 모든 네트워크 인터페이스에 바인딩
+bind-address = 0.0.0.0
