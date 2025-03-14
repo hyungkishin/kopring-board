@@ -6,12 +6,18 @@ spring:
     name: article-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/article?useSSL=false
+    url: jdbc:mysql://localhost:3306/myboard?useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: root
+    password: password
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
     show-sql: true
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        default_batch_fetch_size: 30

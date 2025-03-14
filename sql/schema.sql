@@ -8,9 +8,8 @@ CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON myboard.* TO 'user'@'%';
 FLUSH PRIVILEGES;
 
-CREATE TABLE IF NOT EXISTS `article`
+CREATE TABLE IF NOT EXISTS `articles`
 (
-
     `article_id` BIGINT        NOT NULL PRIMARY KEY COMMENT '게시글 id',
     `title`      VARCHAR(100)  NOT NULL COMMENT '게시글 제목',
     `content`    VARCHAR(3000) NOT NULL COMMENT '게시글 내용',
