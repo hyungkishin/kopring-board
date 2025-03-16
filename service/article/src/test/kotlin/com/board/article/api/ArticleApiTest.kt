@@ -1,4 +1,4 @@
-package com.board.article
+package com.board.article.api
 
 import com.board.article.ui.request.ArticleCreateRequest
 import com.board.article.ui.request.ArticleUpdateRequest
