@@ -1,6 +1,7 @@
 package com.board.article.domain.repository
 
 import com.board.article.domain.Article
+import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -36,8 +37,17 @@ class ArticleRepositoryTest {
         val elapsedTimeMillis = measureTimeMillis {
             count = articleRepository.countAllArticles(1L, 10000L)
         }
-        println("쿼리 수행 ${elapsedTimeMillis/1000.0} 초 소요")
+        println("쿼리 수행 ${elapsedTimeMillis / 1000.0} 초 소요")
         println("게시글 수: $count")
     }
 
+    @Test
+    fun `무한 스크롤 게시글 조회시`() {
+        val articles = articleRepository.findAllInfinityScrollArticles(1L, 30L)
+        val lastArticleId = articles.last().id
+
+        val nextArticles = articleRepository.findAllInfinityScrollArticles(1L, 30L, lastArticleId!!)
+
+        assertThat(nextArticles.first().id).isLessThan(lastArticleId)
+    }
 }

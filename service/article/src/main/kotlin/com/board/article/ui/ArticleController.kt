@@ -22,9 +22,18 @@ class ArticleController(
     fun readAll(
         @RequestParam("boardId") boardId: Long,
         @RequestParam("page") page: Long,
-        @RequestParam("size") size: Long,
+        @RequestParam("pageSize") pageSize: Long,
     ): ArticlePageResponse {
-        return articleService.readAll(boardId, page, size)
+        return articleService.readAll(boardId, page, pageSize)
+    }
+
+    @GetMapping( "/infinity-scroll")
+    fun readAllInfinityScroll(
+        @RequestParam("boardId") boardId: Long,
+        @RequestParam("pageSize") pageSize: Long,
+        @RequestParam("lastArticleId") lastArticleId: Long?,
+    ): List<ArticleResponse> {
+        return articleService.readAllInfinityScroll(boardId, pageSize, lastArticleId)
     }
 
     @GetMapping("/{id}")

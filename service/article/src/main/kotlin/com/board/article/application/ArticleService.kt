@@ -52,15 +52,29 @@ class ArticleService(
     }
 
     @Transactional(readOnly = true)
-    fun readAll(boardId: Long, page: Long, size: Long): ArticlePageResponse {
-        val articleResponses = articleRepository.findAllArticles(boardId, (page - 1) * size, size)
+    fun readAll(boardId: Long, page: Long, pageSize: Long): ArticlePageResponse {
+        val articleResponses = articleRepository.findAllArticles(boardId, (page - 1) * pageSize, pageSize)
             .map { article -> ArticleResponse.fromEntity(article) }
 
-        val pageLimit = calculatePageLimit(page, size, 10L)
+        val pageLimit = calculatePageLimit(page, pageSize, 10L)
 
         val count = articleRepository.countAllArticles(boardId, pageLimit)
 
         return ArticlePageResponse.of(articleResponses, count)
+    }
+
+    @Transactional(readOnly = true)
+    fun readAllInfinityScroll(
+        boardId: Long,
+        pageSize: Long,
+        lastArticleId: Long? = null
+    ): List<ArticleResponse> {
+        val articles = when (lastArticleId) {
+            null -> articleRepository.findAllInfinityScrollArticles(boardId, pageSize)
+            else -> articleRepository.findAllInfinityScrollArticles(boardId, pageSize, lastArticleId)
+        }
+
+        return articles.map(ArticleResponse::fromEntity)
     }
 
 }
