@@ -15,7 +15,7 @@ data class ArticleCreateRequest(
             title = title,
             content = content,
             boardId = boardId,
-            writeId = writeId,
+            writerId = writeId,
         )
     }
 

@@ -3,6 +3,7 @@ package com.board.article.ui
 import com.board.article.application.ArticleService
 import com.board.article.ui.request.ArticleCreateRequest
 import com.board.article.ui.request.ArticleUpdateRequest
+import com.board.article.ui.response.ArticlePageResponse
 import com.board.article.ui.response.ArticleResponse
 import org.springframework.web.bind.annotation.*
 
@@ -15,6 +16,15 @@ class ArticleController(
     @PostMapping
     fun create(@RequestBody request: ArticleCreateRequest): ArticleResponse {
         return articleService.create(request)
+    }
+
+    @GetMapping
+    fun readAll(
+        @RequestParam("boardId") boardId: Long,
+        @RequestParam("page") page: Long,
+        @RequestParam("size") size: Long,
+    ): ArticlePageResponse {
+        return articleService.readAll(boardId, page, size)
     }
 
     @GetMapping("/{id}")

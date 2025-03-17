@@ -48,7 +48,7 @@ class DataInitialize {
                     title = "제목 : $i",
                     content = "내용 : $i",
                     boardId = 1L,
-                    writeId = 1L,
+                    writerId = 1L,
                 )
 
                 entityManager.persist(article)

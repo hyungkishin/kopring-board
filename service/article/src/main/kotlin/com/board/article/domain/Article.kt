@@ -21,13 +21,17 @@ class Article(
     val boardId: Long? = null, // shard key
 
     @Column(name = "writer_id")
-    val writeId: Long? = null,
+    val writerId: Long? = null,
 
     ) : BaseTimeEntity() {
 
     fun update(incomingArticle: Article) {
         this.title = incomingArticle.title
         this.content = incomingArticle.content
+    }
+
+    override fun toString(): String {
+        return "Article(id=$id, title='$title', content='$content', boardId=$boardId, writerId=$writerId)"
     }
 
 }

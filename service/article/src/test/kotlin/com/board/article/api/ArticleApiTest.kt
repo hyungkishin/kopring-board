@@ -2,6 +2,7 @@ package com.board.article.api
 
 import com.board.article.ui.request.ArticleCreateRequest
 import com.board.article.ui.request.ArticleUpdateRequest
+import com.board.article.ui.response.ArticlePageResponse
 import com.board.article.ui.response.ArticleResponse
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Test
@@ -26,7 +27,7 @@ class ArticleApiTest {
         assertThat(response.content).isEqualTo("내용")
     }
 
-    private fun create(request: ArticleCreateRequest) : ArticleResponse {
+    private fun create(request: ArticleCreateRequest): ArticleResponse {
         return restClient.post()
             .uri("/articles")
             .body(request)
@@ -57,12 +58,22 @@ class ArticleApiTest {
         assertThat(updateResponse.content).isEqualTo("내용 수정")
     }
 
-    private fun update(id: Long, request: ArticleUpdateRequest) : ArticleResponse {
+    private fun update(id: Long, request: ArticleUpdateRequest): ArticleResponse {
         return restClient.put()
             .uri("/articles/${id}")
             .body(request)
             .retrieve()
             .body(ArticleResponse::class.java)!!
+    }
+
+    @Test
+    fun `게시글 페이지 조회`() {
+        val articlePageResponse = restClient.get()
+            .uri("/articles?boardId=1&page=1&size=30")
+            .retrieve()
+            .body(ArticlePageResponse::class.java)!!
+
+        assertThat(articlePageResponse).isNotNull
     }
 
 }

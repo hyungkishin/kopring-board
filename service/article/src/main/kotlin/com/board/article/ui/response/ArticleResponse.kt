@@ -20,7 +20,7 @@ data class ArticleResponse(
                 title = article.title,
                 content = article.content,
                 boardId = article.boardId!!,
-                writeId = article.writeId!!,
+                writeId = article.writerId!!,
                 createdAt = article.createdAt,
                 updatedAt = article.updatedAt,
             )

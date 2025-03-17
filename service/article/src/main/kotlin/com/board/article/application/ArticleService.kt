@@ -1,9 +1,11 @@
 package com.board.article.application
 
+import com.board.article.application.util.calculatePageLimit
 import com.board.article.domain.Article
 import com.board.article.domain.repository.ArticleRepository
 import com.board.article.ui.request.ArticleCreateRequest
 import com.board.article.ui.request.ArticleUpdateRequest
+import com.board.article.ui.response.ArticlePageResponse
 import com.board.article.ui.response.ArticleResponse
 import kuke.board.common.snowflake.Snowflake
 import org.springframework.stereotype.Service
@@ -49,5 +51,16 @@ class ArticleService(
         articleRepository.deleteById(id)
     }
 
+    @Transactional(readOnly = true)
+    fun readAll(boardId: Long, page: Long, size: Long): ArticlePageResponse {
+        val articleResponses = articleRepository.findAllArticles(boardId, (page - 1) * size, size)
+            .map { article -> ArticleResponse.fromEntity(article) }
+
+        val pageLimit = calculatePageLimit(page, size, 10L)
+
+        val count = articleRepository.countAllArticles(boardId, pageLimit)
+
+        return ArticlePageResponse.of(articleResponses, count)
+    }
 
 }
