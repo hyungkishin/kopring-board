@@ -1,4 +1,4 @@
-package com.board.article.domain.base
+package kuke.board.common.entity.base
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

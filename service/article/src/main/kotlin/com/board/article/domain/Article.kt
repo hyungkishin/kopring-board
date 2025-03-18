@@ -1,6 +1,6 @@
 package com.board.article.domain
 
-import com.board.article.domain.base.BaseTimeEntity
+import kuke.board.common.entity.base.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity

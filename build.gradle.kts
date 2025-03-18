@@ -52,9 +52,7 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
         // 테스트 의존성
-        testImplementation("org.springframework.boot:spring-boot-starter-test") {
-            exclude(group = "org.mockito", module = "mockito-core")
-        }
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 
 }
