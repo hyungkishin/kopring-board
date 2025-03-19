@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `comments`
     `article_id`        BIGINT          NOT NULL COMMENT '게시글 id',
     `parent_comment_id` BIGINT          NOT NULL COMMENT '상위 댓글 id',
     `writer_id`         BIGINT          NOT NULL COMMENT '글쓴이 id',
-    `deleted`           TIMESTAMP       NOT NULL COMMENT '삭제 여부',
+    `deleted`           BOOLEAN         NOT NULL COMMENT '삭제 여부',
     `created_at`        TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시각',
     `updated_at`        TIMESTAMP       NULL COMMENT '최근 수정 시각'
     ) ENGINE = InnoDB

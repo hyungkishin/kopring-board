@@ -18,11 +18,11 @@ class CommentService(
     @Transactional
     fun createComment(request: CommentCreateRequest): CommentResponse {
         val commentId = findParentComment(request.parentCommentId)?.id
-            ?: request.parentCommentId
+            ?: snowflake.nextId()
 
         val comment = commentRepository.save(
             Comment.create(
-                id = snowflake.nextId(),
+                id = commentId,
                 articleId = request.articleId,
                 content = request.content,
                 parentCommentId = commentId,
@@ -64,7 +64,7 @@ class CommentService(
     private fun hasChildren(comment: Comment): Boolean {
         return commentRepository.countBy(
             comment.articleId,
-            comment.id!!,
+            comment.id,
             HAS_CHILD_COMMENT_COUNT
         ) == HAS_CHILD_COMMENT_COUNT
     }
@@ -72,10 +72,12 @@ class CommentService(
     private fun deleteCommentAndCheckParent(comment: Comment) {
         commentRepository.delete(comment)
         if (!comment.isRoot()) {
-            commentRepository.findById(comment.parentCommentId)
-                .filter { it.deleted }
-                .filter { !hasChildren(it) }
-                .ifPresent { deleteCommentAndCheckParent(it) }
+            comment.parentCommentId?.let {
+                commentRepository.findById(it)
+                    .filter { it.deleted }
+                    .filter { !hasChildren(it) }
+                    .ifPresent { deleteCommentAndCheckParent(it) }
+            }
         }
     }
 

@@ -9,9 +9,9 @@ interface CommentRepository : JpaRepository<Comment, Long> {
 
     @Query(value =
         """
-            select (*) from (
+            select count(*) from (
                 select comment_id
-                from comment
+                from comments
                 where article_id = :articleId and parent_comment_id = :parentCommentId
                 limit :limit
             ) t
