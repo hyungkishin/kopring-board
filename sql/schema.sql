@@ -55,3 +55,14 @@ CREATE TABLE IF NOT EXISTS `comments_v2`
   DEFAULT CHARACTER SET = utf8mb4 COMMENT = '댓글';
 
 CREATE UNIQUE INDEX IDX_ARTICLE_ID_PATH ON comments_v2 (article_id asc, path asc)
+
+CREATE TABLE `article_likes`
+(
+    `article_like_id` BIGINT UNSIGNED NOT NULL PRIMARY KEY COMMENT '좋아요 id',
+    `article_id`      BIGINT          NOT NULL COMMENT '게시글 id',
+    `user_id`         BIGINT          NOT NULL COMMENT '유저 id',
+    `created_at`      TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시각'
+) ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8mb4 COMMENT = '좋아요';
+
+CREATE UNIQUE INDEX IDX_ARTICLE_ID_USER_ID on article_likes(article_id asc, user_id asc);
