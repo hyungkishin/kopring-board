@@ -1,14 +1,16 @@
 package com.board.comment.ui.response
 
 import com.board.comment.domain.Comment
+import com.board.comment.domain.CommentV2
 
 data class CommentResponse(
     val commentId: Long,
     val content: String,
-    val parentCommentId: Long,
+    val parentCommentId: Long?,
     val articleId: Long,
     val writerId: Long,
     val deleted: Boolean,
+    val path: String,
     val createdAt: String,
 ) {
     companion object {
@@ -16,15 +18,34 @@ data class CommentResponse(
         @JvmStatic
         fun fromEntity(comment: Comment): CommentResponse {
             return CommentResponse(
-                commentId = comment.id!!,
+                commentId = comment.id,
                 content = comment.content,
-                parentCommentId = comment.parentCommentId!!,
+                parentCommentId = comment.parentCommentId,
                 articleId = comment.articleId,
-                 writerId = comment.writerId,
+                writerId = comment.writerId,
+                deleted = comment.deleted,
+                path = "",
+                createdAt = comment.createdAt.toString(),
+            )
+        }
+
+        @JvmStatic
+        fun fromEntityV2(comment: CommentV2): CommentResponse {
+            return CommentResponse(
+                commentId = comment.id,
+                content = comment.content,
+                path = comment.commentPath.path,
+                parentCommentId = null,
+                articleId = comment.articleId,
+                writerId = comment.writerId,
                 deleted = comment.deleted,
                 createdAt = comment.createdAt.toString(),
             )
         }
+    }
+
+    override fun toString(): String {
+        return "CommentResponse(commentId=$commentId, content='$content', parentCommentId=$parentCommentId, articleId=$articleId, writerId=$writerId, deleted=$deleted, path='$path', createdAt='$createdAt')"
     }
 
 }

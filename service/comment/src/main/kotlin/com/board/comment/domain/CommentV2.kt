@@ -1,14 +1,11 @@
 package com.board.comment.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import kuke.board.common.entity.base.BaseTimeEntity
 
 @Entity
-@Table(name = "comments")
-class Comment(
+@Table(name = "comments_v2")
+class CommentV2 constructor(
 
     @Id
     @Column(name = "comment_id")
@@ -17,22 +14,22 @@ class Comment(
     @Column(name = "content")
     var content: String,
 
-    @Column(name = "parent_comment_id")
-    val parentCommentId: Long,
-
     @Column(name = "article_id")
     val articleId: Long, // shard key
 
     @Column(name = "writer_id")
     val writerId: Long,
 
-    @Column(name = "deleted")
-    var deleted: Boolean = false
+    @Embedded
+    val commentPath: CommentPath,
 
-) : BaseTimeEntity() {
+    @Column(name = "deleted")
+    var deleted: Boolean = false,
+
+    ): BaseTimeEntity() {
 
     fun isRoot(): Boolean {
-        return this.parentCommentId == this.id
+        return commentPath.isRoot()
     }
 
     fun deleted() {
@@ -40,7 +37,7 @@ class Comment(
     }
 
     override fun toString(): String {
-        return "Comment(id=$id, content='$content', parentCommentId=$parentCommentId, articleId=$articleId, writerId=$writerId, deleted=$deleted)"
+        return "Comment(id=$id, content='$content', articleId=$articleId, writerId=$writerId, deleted=$deleted)"
     }
 
     companion object {
@@ -49,16 +46,16 @@ class Comment(
         fun create(
             id: Long,
             content: String,
-            parentCommentId: Long?,
             articleId: Long,
             writerId: Long,
-        ): Comment {
-            return Comment(
+            commentPath: CommentPath,
+        ): CommentV2 {
+            return CommentV2(
                 id = id,
                 content = content,
-                parentCommentId = parentCommentId?: id,
                 articleId = articleId,
                 writerId = writerId,
+                commentPath = commentPath,
                 deleted = false
             )
         }

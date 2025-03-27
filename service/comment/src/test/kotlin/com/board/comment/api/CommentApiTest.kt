@@ -1,8 +1,10 @@
 package com.board.comment.api
 
 import com.board.comment.ui.request.CommentCreateRequest
+import com.board.comment.ui.response.CommentPageResponse
 import com.board.comment.ui.response.CommentResponse
 import org.junit.jupiter.api.Test
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.web.client.RestClient
 
 class CommentApiTest {
@@ -15,9 +17,7 @@ class CommentApiTest {
         val response2 = createComment(CommentCreateRequest(1L, "댓글 내용 2", response1.commentId, 1L))
         val response3 = createComment(CommentCreateRequest(1L, "댓글 내용 2", response1.commentId, 1L))
 
-
         println("commentId1: ${response1.commentId} , commentId2: ${response2.commentId} , commentId3: ${response3.commentId}")
-
     }
 
     private fun createComment(request: CommentCreateRequest): CommentResponse {
@@ -37,7 +37,7 @@ class CommentApiTest {
 //
 //        assertThat(response?.commentId).isNotNull()
 //    }
-
+//
 //    @Test
 //    fun `댓글 삭제`() {
 //        restClient.delete()
@@ -45,5 +45,33 @@ class CommentApiTest {
 //            .retrieve()
 //            .body(Void::class.java)
 //    }
+
+    @Test
+    fun `댓글 목록 조회`() {
+        val response = restClient.get()
+            .uri("/v1/comments?articleId=1&page=1&pageSize=10")
+            .retrieve()
+            .body(CommentPageResponse::class.java)
+
+        println(response)
+    }
+
+    @Test
+    fun `무한 스크롤 댓글 목록 조회`() {
+        val response = restClient.get()
+            .uri("/v1/comments/infinite-scroll?articleId=1&pageSize=5")
+            .retrieve()
+            .body(object : ParameterizedTypeReference<List<CommentResponse>>() {})!!
+
+        val parentCommentId = response.last().parentCommentId
+        val commentId = response.last().commentId
+
+        val response1 = restClient.get()
+            .uri("/v1/comments/infinite-scroll?articleId=1&pageSize=5&lastParentCommentId=${parentCommentId}&lastCommentId=${commentId}")
+            .retrieve()
+            .body(object : ParameterizedTypeReference<List<CommentResponse>>() {})!!
+
+        println(response1)
+    }
 
 }

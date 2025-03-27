@@ -1,8 +1,10 @@
 package com.board.comment.application
 
+import com.board.comment.application.util.calculatePageLimit
 import com.board.comment.domain.Comment
 import com.board.comment.domain.repository.CommentRepository
 import com.board.comment.ui.request.CommentCreateRequest
+import com.board.comment.ui.response.CommentPageResponse
 import com.board.comment.ui.response.CommentResponse
 import kuke.board.common.snowflake.Snowflake
 import org.springframework.stereotype.Service
@@ -81,8 +83,32 @@ class CommentService(
         }
     }
 
+    @Transactional(readOnly = true)
+    fun readAll(articleId: Long, page: Long, pageSize: Long): CommentPageResponse {
+        val comments = commentRepository.findAll(articleId, (page - 1) * pageSize, pageSize)
+            .map { CommentResponse.fromEntity(it) }
+
+        val offset = calculatePageLimit(page, pageSize, MOVABLE_PAGE_COUNT)
+
+        val commentCount = commentRepository.count(articleId, offset)
+
+        return CommentPageResponse.of(comments, commentCount)
+    }
+
+    @Transactional(readOnly = true)
+    fun readAll(articleId: Long, limit: Long, lastParentCommentId: Long?, lastCommentId: Long?): List<CommentResponse> {
+        val comments = if (lastCommentId == null || lastParentCommentId == null) {
+            commentRepository.findAllInfiniteScroll(articleId, limit)
+        } else {
+            commentRepository.findAllInfiniteScroll(articleId, limit, lastParentCommentId, lastCommentId)
+        }
+
+        return comments.map { CommentResponse.fromEntity(it) }
+    }
+
     companion object {
         const val HAS_CHILD_COMMENT_COUNT = 2L
+        const val MOVABLE_PAGE_COUNT = 10L
     }
 
 }

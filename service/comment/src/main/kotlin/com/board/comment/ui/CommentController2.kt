@@ -1,15 +1,15 @@
 package com.board.comment.ui
 
-import com.board.comment.application.CommentService
-import com.board.comment.ui.request.CommentCreateRequest
+import com.board.comment.application.CommentServiceV2
+import com.board.comment.ui.request.CommentCreateRequestV2
 import com.board.comment.ui.response.CommentPageResponse
 import com.board.comment.ui.response.CommentResponse
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/v1/comments")
+@RequestMapping("/v2/comments")
 @RestController
-class CommentController(
-    private val commentService: CommentService,
+class CommentController2(
+    private val commentService: CommentServiceV2,
 ) {
 
     @GetMapping("/{commentId}")
@@ -18,7 +18,7 @@ class CommentController(
     }
 
     @PostMapping
-    fun createComment(@RequestBody request: CommentCreateRequest): CommentResponse {
+    fun createComment(@RequestBody request: CommentCreateRequestV2): CommentResponse {
         return commentService.createComment(request)
     }
 
@@ -33,17 +33,24 @@ class CommentController(
         @RequestParam("page") page: Long,
         @RequestParam("pageSize") pageSize: Long,
     ): CommentPageResponse {
-        return commentService.readAll(articleId, page, pageSize)
+        return commentService.readAll(
+            articleId,
+            page,
+            pageSize
+        )
     }
 
-    @GetMapping("/infinite-scroll")
+    @GetMapping("/infinity-scroll")
     fun readAll(
         @RequestParam("articleId") articleId: Long,
+        @RequestParam(value = "lastPath", required = false) lastPath: String?,
         @RequestParam("pageSize") pageSize: Long,
-        @RequestParam(value = "lastParentCommentId", required = false) lastParentCommentId: Long?,
-        @RequestParam(value = "lastCommentId", required = false) lastCommentId: Long?,
     ): List<CommentResponse> {
-        return commentService.readAll(articleId, pageSize, lastParentCommentId, lastCommentId)
+        return commentService.readAllInfiniteScroll(
+            articleId,
+            lastPath,
+            pageSize
+        )
     }
 
 }
